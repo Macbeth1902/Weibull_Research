@@ -15,9 +15,13 @@ An adaptive methodology is proposed for modeling the right tail of daily maximum
 ## Repository structure
 
 ├── paper/ LaTeX source (English and Spanish versions)
+
 ├── code/ Python analysis and figure scripts
+
 ├── figures/ All figures used in the paper
+
 ├── results/ Summary table of estimated parameters
+
 └── data/ Excel files used in prueba28.py
 
 
