@@ -1,0 +1,967 @@
+\documentclass[APA,STIX1COL]{WileyNJD-v2}
+
+\articletype{Special Issue Paper}
+
+\received{}
+\revised{}
+\accepted{}
+
+\raggedbottom
+
+\begin{document}
+
+\title{Extreme Maximum Temperature Events in Mexico: A Weibull Distribution Approach with Optimized Plotting Positions}
+
+\author[1]{Sazcha Olivera}
+
+\authormark{OLIVERA \textsc{et al}}
+
+\address[1]{\orgdiv{Departamento de Teoría y Procesos del Diseño, Ciencias de la Comunicación y Diseño}, \orgname{Universidad Autónoma Metropolitana-Unidad Cuajimalpa}, \orgaddress{\state{Ciudad de México}, \country{México}}}
+
+\corres{Sazcha Olivera, Departamento de Teoría y Procesos del Diseño, Ciencias de la
+Comunicación y Diseño, Universidad Autónoma Metropolitana-Unidad Cuajimalpa, 05370 Ciudad de México, Mexico. \email{satzcha@msn.com}}
+
+%% ─────────────────────────────────────────────────────────────
+\abstract[Resumen]{
+Se propone una metodología adaptativa para modelar la cola derecha de excedencias de temperatura máxima diaria mediante la distribución de Weibull truncada de dos parámetros, extendiendo el esquema ponderado de \citet{olivera2019} en tres dimensiones:
+(i)~el umbral de referencia se estima como la temperatura modal mediante estimación kernel de la densidad (KDE); (ii)~el número de clases del histograma agrupado se determina por la regla de Freedman--Diaconis; y (iii)~el parámetro~$a$ de la familia simétrica $p_i(a)=(i-a)/(n+1-2a)$ se optimiza
+adaptando la posición de trazado a los datos, operación que se justifica teóricamente para la subfamilia $0<k<1$. La metodología se aplica a temperaturas máximas diarias de cinco ciudades de México y el suroeste de Estados Unidos en tres periodos de veinte años; los resultados muestran que el umbral modal~$\mu^*$ presenta una tendencia
+ascendente en la mayoría de las ciudades analizadas, mientras que el
+parámetro de forma~$\hat\beta$ permanece comparativamente estable dentro
+de cada región, evidenciando que los cambios en los extremos térmicos se
+expresan principalmente como desplazamientos del nivel habitual de temperatura.
+}
+
+\keywords{distribuci\'on Weibull; posiciones de trazado;
+par\'ametro~$a$; estimaci\'on kernel de la densidad; temperaturas
+extremas; cola Weibull; construcci\'on de clases;
+Freedman--Diaconis; pesos de Bergman.}
+
+\jnlcitation{\cname{\author{Olivera S.}
+             (\cyear{2026}),
+             \ctitle{Extreme Maximum Temperature Events in Mexico: A Weibull Distribution Approach with Optimized Plotting Positions},
+             \cjournal{[Revista]}, \cvol{00:1--XX}.}
+
+\maketitle
+
+%% ════════════════════════════════════════════════════════════
+\section{Introducción}\label{sec:intro}
+%% ════════════════════════════════════════════════════════════
+
+La distribución de Weibull ocupa una posición particular en la estadística aplicada porque combina una formulación relativamente
+simple con una notable flexibilidad de forma. Desde sus primeras aplicaciones al análisis de fallas de materiales \citep{weibull1951}, su uso se ha extendido a la hidrología, la
+climatolog\'ia, la ingenier\'ia de confiabilidad y el an\'alisis de
+riesgos. En todos esos campos, el inter\'es no recae en el centro
+de la distribuci\'on sino en su cola derecha: la probabilidad de
+que la variable supere umbrales elevados, raramente observados pero
+con consecuencias significativas.
+
+Cuando la distribuci\'on de Weibull se estima mediante el gr\'afico
+de probabilidad, las observaciones ordenadas no aportan, por s\'i
+mismas, sus probabilidades acumuladas. A cada $x_{(i)}$ debe
+asign\'arsele una probabilidad de no excedencia, denominada
+\emph{posici\'on de trazado}~$p_i$. La elecci\'on de $p_i$ no es
+inocua: es la que determina las coordenadas de la regresi\'on lineal
+en el papel de probabilidad y, por tanto, las estimaciones de los
+par\'ametros de forma~$k$ y escala~$\lambda$.
+
+Una familia que re\'une muchas de las reglas cl\'asicas es
+\begin{equation}\label{eq:familia_intro}
+p_i(a) = \frac{i - a}{n + 1 - 2a},\qquad 0 \leq a < \tfrac{1}{2}.
+\end{equation}
+El valor $a=0$ genera la regla de Weibull~\citep{weibull1951};
+$a\approx 0.30$ corresponde a la aproximaci\'on de Benard y
+Bos-Levenbach~\citeyearpar{benard1953}; $a=0.375$ conduce a la
+f\'ormula de Blom~\citeyearpar{blom1958}; $a\approx 0.44$ a
+Gringorten~\citeyearpar{gringorten1963}, y el l\'imite $a\to 0.5$
+reproduce la posici\'on de Hazen. Aunque estas reglas difieren poco
+num\'ericamente, su impacto sobre los cuantiles extremos estimados resulta ser sustancial, particularmente cuando el tama\~no de muestra
+es moderado y la distribuci\'on tiene una cola pesada.
+
+Existe, al mismo tiempo, un fundamento te\'orico bien establecido
+para las posiciones de trazado. Si $X_{(i)}$ es el i-ésimo estadístico de orden de una muestra continua, entonces definimos $U_{(i)}=F(X_{(i)})$ tal que 
+
+\begin{equation*}
+    U_{(i)}\sim\mathrm{Beta}(i,\,n+1-i)
+\end{equation*}
+
+Y 
+
+\begin{equation}
+    \mathbb{E}[U_{(i)}]=\dfrac{i}{n+1}, 
+\end{equation}
+
+\medskip
+
+lo que explica la regla de Weibull
+\citep{makkonen2014}. Sin embargo, el ajuste linealizado utiliza la
+transformaci\'on doble logar\'itmica $g(p)=\ln[-\ln(1-p)]$, que es
+estrictamente convexa. En consecuencia, la desigualdad de Jensen
+implica que $g(E[U_{(i)}])\neq E[g(U_{(j)})]$, y la posici\'on
+que es exacta en la escala de probabilidades no minimiza el sesgo
+en la escala transformada. La magnitud de esta brecha depende de
+la curvatura de~$g$ en el rango de probabilidades relevante, y
+por tanto del par\'ametro de forma~$k$ del modelo ajustado.
+
+\citet{goda1988,goda2010} determinaron mediante simulaci\'on Monte
+Carlo que la posici\'on \'optima para extremos Weibull depende
+expl\'icitamente de~$k$, proporcin\'ando coeficientes calibrados
+para el an\'alisis de oleaje extremo. Kim et~al.
+\citeyearpar{kim2012,kim2015} extendieron ideas similares a la
+distribuci\'on log\'istica generalizada. A pesar de estos
+precedentes, la pr\'actica habitual en climatolog\'ia e hidrolog\'ia
+contin\'ua fijando~$a$ de antemano o seleccionando la posici\'on
+que produce el mayor~$R^2$ dentro de la misma muestra que se analiza,
+lo que introduce optimismo de selecci\'on sin garant\'ia de
+generalizaci\'on.
+
+El punto de partida inmediato de esta investigaci\'on es
+\citet{olivera2019}. Su procedimiento compar\'o posiciones de
+trazado para el an\'alisis de excedencias de precipitaci\'on y
+utiliz\'o la funci\'on de peso derivada de Bergman
+\citeyearpar{bergman1986} para ponderar el ajuste linealizado:
+
+\begin{equation}\label{eq:bergman_intro}
+w_i = (1 - p_i)\,[\ln(1-p_i)]^2.
+\end{equation}
+
+\medskip
+
+Esta precisión tambi\'en revela una caracter\'istica del peso que
+resulta pertinente para el an\'alisis de extremos: $w_i$ alcanza su
+m\'aximo en $p\approx 0.8647$ y tiende a cero cuando $p\to 1$, por
+lo que no asigna el mayor peso al m\'aximo de la muestra. El trabajo
+de \citet{olivera2019} mostr\'o que la elecci\'on de la posici\'on
+de trazado puede cambiar las conclusiones sobre tendencias en
+cuantiles extremos; sin embargo, trat\'o~$a$ como fijo en todas las
+muestras.
+
+La propuesta de la presente investigaci\'on consiste en estimar una
+regla $\hat{a}=g(n,\tilde{k})$ dentro de la familia
+sim\'etrica~\eqref{eq:familia_intro}, donde $n$ es el n\'umero de
+clases y $\tilde{k}$ es una estimaci\'on preliminar del par\'ametro
+de forma obtenida sin posiciones de trazado. El dominio principal
+es la Weibull con $0<k<1$: en este intervalo la distribuci\'on
+presenta una cola exponencial estirada que decrece m\'as lentamente
+que una exponencial, aunque no constituye una cola de potencia
+(Pareto). Este r\'egimen de cola Weibull \citep{gardes2005,
+diebolt2008} es el emp\'iricamente relevante para excedencias de
+temperatura m\'axima en climas continentales y semi\'aridos, donde
+los episodios de calor intenso son frecuentes pero el calor extremo
+tiene un l\'imite f\'isico superior que descarta las leyes de potencia.
+
+%%NUEVA METODOLOGÍA
+
+La metodología integra, además de la optimización de~$a$, tres contribuciones sobre el preprocesamiento de los datos que responden a limitaciones de las implementaciones anteriores:
+
+\textbf{1. Umbral modal mediante KDE.}
+El umbral que separa días normales de
+excedencias se estima como la temperatura modal mediante el estimador kernel de la densidad~\citep{rosenblatt1956,parzen1962}. Esto permite reflejar la temperatura más
+frecuente y hace posible que la proporción de excedencias sea una cantidad estimada, no fijada de antemano.
+
+\textbf{2. Número de clases por Freedman--Diaconis.}
+El ancho del histograma empleado en la regresión agrupada se determina mediante la regla de Freedman-Diaconis~\citeyearpar{freedman1981},
+que es asintóticamente óptima bajo condiciones más débiles que la regla de Sturges y adapta el número de clases~$n$ al
+tamaño y la dispersión de los datos de cada ciudad y periodo.
+
+\textbf{3. Modelo de mezcla.}
+La variable de excedencia $T_i=\max(X_i-\mu^*,0)$ no es puramente continua: tiene una masa puntual en $T=0$ para todos los días con
+$X_i\leq\mu^*$ y una componente Weibull continua para $T>0$. La especificación explícita de la distribución de mezcla
+
+\begin{equation}\label{eq:mezcla_intro}
+F_{\mathrm{mix}}(t) = p_0 + (1-p_0)\,F(t;\,k,\lambda),\qquad t>0,
+\end{equation}
+
+es necesaria para que la función de distribución empírica y el modelo ajustado se comparen en la misma escala. Sin este paso,
+la FDA empírica parte de~$p_0\approx 0.5$ mientras que la FDA Weibull parte de~0, produciendo residuos artificialmente grandes.
+
+La pregunta de investigación central es: \textit{\textquestiondown Es posible cuantificar cambios en la cola derecha de la distribución de los eventos de temperatura máxima a lo largo de varias décadas, utilizando la distribución de Weibull ajustada a las excedencias?} A partir de esta pregunta se plantean dos hipótesis verificables:
+
+\begin{enumerate}
+\item[\textbf{H1.}] \textbf{Estabilidad de la forma distribucional.}
+  El parámetro de forma~$k$ de la distribución Weibull ajustada a las excedencias de temperatura máxima no varía significativamente entre los tres periodos analizados dentro de cada ciudad. Los cambios en los extremos térmicos se reflejan principalmente en desplazamientos del umbral modal~$\mu^*$ y de la escala~$\lambda$, no en cambios en la forma de la distribución.
+
+\item[\textbf{H2.}] \textbf{Desplazamiento de los niveles extremos.}
+  El umbral modal~$\mu^*$ exhibe una tendencia positiva entre periodos
+  en la mayor\'ia de las ciudades analizadas. Como consecuencia, aun
+  cuando la forma de la distribuci\'on permanezca estable, las
+  probabilidades de superar umbrales cr\'iticos fijos aumentan entre
+  d\'ecadas, con repercusiones sobre la demanda de energ\'ia para
+  climatizaci\'on en entornos urbanos.
+\end{enumerate}
+
+La metodolog\'ia propuesta permite contrastar ambas hip\'otesis mediante
+la comparaci\'on de los par\'ametros estimados~$(k, \lambda, \mu^*)$
+y de las probabilidades de excedencia calculadas para umbrales
+cl\'imaticamente relevantes.
+
+%% ════════════════════════════════════════════════════════════
+\section{Distribución de Weibull y el régimen de cola}\label{sec:weibull}
+%% ════════════════════════════════════════════════════════════
+
+Para evitar la ambigüedad frecuente en la literatura sobre el
+intercambio de los símbolos~$\alpha$ y~$\beta$ entre tradiciones
+distintas, se adopta la notación internacional: $k>0$ para el
+parámetro de forma y $\lambda>0$ para el de escala
+\citep[véase también][]{makkonen2014}. La función de distribución
+acumulada (FDA) y la función de supervivencia de la distribución
+Weibull de dos parámetros son
+\begin{equation}\label{eq:fda}
+F(x;\,k,\lambda)
+  = 1 - \exp\!\left\{-\left(\frac{x}{\lambda}\right)^{\!k}\right\},
+  \qquad x > 0,
+\end{equation}
+\begin{equation}\label{eq:supervivencia}
+S(x;\,k,\lambda)
+  = \exp\!\left\{-\left(\frac{x}{\lambda}\right)^{\!k}\right\},
+\end{equation}
+con tasa de riesgo
+\begin{equation}\label{eq:hazard}
+h(x) = \frac{k}{\lambda}\left(\frac{x}{\lambda}\right)^{k-1}.
+\end{equation}
+
+\medskip
+Esta función es decreciente para $0<k<1$, constante para $k=1$
+(distribución exponencial) y creciente para $k>1$.
+
+Siguiendo \citet{gardes2005} y \citet{diebolt2008}, se dice que una
+distribución pertenece a la \emph{clase de cola Weibull} si su función
+de supervivencia satisface
+\begin{equation}\label{eq:cola_weibull}
+-\ln S(x) = x^\tau\,\ell(x),\qquad \tau>0,
+\end{equation}
+
+\medskip
+
+donde $\ell$ es una función de variación lenta en infinito. La Weibull
+estándar es el miembro canónico de esta clase con $\tau=k$ y
+$\ell\equiv\lambda^{-k}$. Para $0<k<1$, la cola es \emph{más pesada
+que la exponencial} pero \emph{más ligera que cualquier ley de
+potencia} (tipo Pareto); este régimen intermedio descarta tanto las
+distribuciones de cola pesada, como la distribución
+exponencial pura ($k=1$). En $k>1$, por su parte, se describen colas que disminuyen rápidamente; bajo excedencias de temperatura sobre el umbral modal $\mu^*$, puede reflejar
+que eventos muy grandes son infrecuentes una vez que se supera la temperatura típica.
+
+El régimen de~$k$ tiene además una implicación directa sobre la
+elección de la posición de trazado. \citet{goda1988,goda2010}
+mostraron mediante simulación Monte Carlo que la posición óptima para
+extremos Weibull depende de~$k$ y que la dependencia es más pronunciada
+cuando $k<1$, lo que motiva el enfoque adaptativo propuesto.
+
+%% ════════════════════════════════════════════════════════════
+\section{Umbral modal y modelo de mezcla}\label{sec:threshold}
+%% ════════════════════════════════════════════════════════════
+
+\subsection{Motivación}
+
+Sea $\{X_i\}_{i=1}^{N}$ la serie de temperaturas m\'aximas diarias
+observadas en una ciudad y per\'iodo determinados. Para construir
+la variable de excedencia es necesario fijar un valor de referencia
+$\mu^*$ que represente la temperatura ``habitual'': los d\'ias con
+$X_i\leq\mu^*$ se clasificar\'an como normales y los d\'ias con
+$X_i>\mu^*$ como excedencias. La elecci\'on de $\mu^*$ condiciona qu\'e proporci\'on
+de las observaciones contribuye a la estimaci\'on de la cola y, por
+tanto, los par\'ametros de la distribuci\'on ajustada.
+
+La alternativa más utilizada en la literatura es la mediana
+muestral~$\hat{m}$. Su limitación principal es que, por construcción, impone que aproximadamente el 50\% de los días sean excedencias,
+independientemente de la asimetría real de la distribución. En
+ciudades con cola derecha extendida ---como Chihuahua o Phoenix, donde
+los episodios de calor extremo desplazan el percentil~50 hacia
+arriba--- esto provoca que días de calor moderado queden
+clasificados como excedencias, deformando los eventos genuinamente atípicos o extremos.
+
+Se propone utilizar en cambio la \emph{moda} de la distribución como un
+umbral~$\mu^*$ que refleja el valor de temperatura que ocurre con mayor
+frecuencia. La moda no impone a priori ninguna fracción de
+excedencias; el valor $\hat{p}_0 = P(T=0)$ resulta de los propios
+datos. Sin embargo, la moda empírica directa es inestable, pues pequeños
+cambios en el criterio de redondeo pueden desplazarla varios décimos de
+grado, y con miles de registros puede no ser única. El histograma de
+frecuencias evita el problema del redondeo pero a su vez introduce arbitrariedad
+en la elección de los límites de los intervalos y produce una curva
+escalonada, inadecuada para localizar un máximo continuo.
+
+La \emph{estimación kernel de la densidad} (KDE) resuelve ambas
+dificultades: suaviza la distribución empírica, produciendo una curva diferenciable cuyo máximo constituye el estimador $\mu^*$ propuesto.
+
+\subsection{El estimador kernel de la densidad}\label{subsec:kde}
+
+Sea $K:\mathbb{R}\to[0,\infty)$ una funci\'on kernel y $h>0$ el ancho de banda que
+controla qu\'e tan amplia es cada campana. El KDE en un punto
+gen\'erico~$x$ se define como \citep{rosenblatt1956,parzen1962}:
+
+\begin{equation}\label{eq:kde}
+\hat{f}_h(x)
+  = \frac{1}{Nh}\sum_{i=1}^{N}
+    K\!\left(\frac{x - X_i}{h}\right).
+\end{equation}
+
+\medskip
+
+Se adopta el n\'ucleo gaussiano est\'andar:
+\begin{equation}\label{eq:kde_gauss}
+K(u) = \frac{1}{\sqrt{2\pi}}\,e^{-u^2/2},
+\end{equation}
+
+\medskip
+
+con lo que cada observaci\'on contribuye una densidad normal con
+media $X_i$ y desviaci\'on est\'andar $h$. El estimador es
+entonces la mezcla equiponderada de $N$ distribuciones normales,
+una centrada en cada observaci\'on.
+
+La elecci\'on del n\'ucleo gaussiano es est\'andar en la pr\'actica, pues produce curvas
+diferenciables en todo punto y no impone un soporte compacto,
+lo que la hace computacionalmente m\'as conveniente y
+estad\'isticamente preferible cuando la densidad subyacente
+es continua y sin discontinuidades abruptas como la temperatura.
+
+\subsubsection{Regla de Scott y estimación del umbral modal}
+El par\'ametro~$h$ determina la suavidad de la curva. Un valor
+de~$h$ muy peque\~no reproduce cada observaci\'on individualmente mientras que un~$h$
+muy grande aplana la curva hasta perder la estructura de la
+distribuci\'on. Existe un valor \'optimo que balancea el sesgo y la varianza.
+
+Formalmente, el error cuadr\'atico integrado medio tiene la
+descomposici\'on asint\'otica
+
+\begin{equation}\label{eq:mise}
+\mathrm{MISE}(h)
+  \approx \underbrace{\frac{h^4}{4}
+            \int[f''(x)]^2\,dx}_{\mathrm{sesgo}^2}
+  + \underbrace{\frac{1}{Nh}
+            \int K^2(u)\,du}_{\mathrm{varianza}}.
+\end{equation}
+
+\medskip
+
+Minimizando respecto a~$h$ se obtiene que el \'optimo satisface
+$h^*\propto N^{-1/5}$, un resultado universal que no depende del
+n\'ucleo ni de la densidad desconocida. \citet{scott1992} evaluó
+la integral $\int[f''(x)]^2\,dx$ bajo el supuesto de densidad
+gaussiana subyacente y n\'ucleo gaussiano, obteniendo
+
+\begin{equation}\label{eq:scott}
+h_{\mathrm{Scott}} = 1.059\,\hat{\sigma}\,N^{-1/5},
+\end{equation}
+
+\medskip
+
+donde $\hat{\sigma}$ es la desviaci\'on est\'andar muestral.
+
+La regla de Scott es la opci\'on est\'andar cuando la densidad subyacente es aproximadamente unimodal
+\citep{silverman1986}; sus supuestos son aceptables para la
+distribuci\'on de temperatura m\'axima en los per\'iodos
+analizados.
+
+\medskip
+
+Con el estimador $\hat{f}_h$ disponible, la moda de la distribuci\'on
+se estima como el argumento que maximiza la densidad suavizada:
+
+\begin{equation}\label{eq:mustar}
+\mu^* = \underset{x\in\mathcal{G}}{\arg\max}\;\hat{f}_h(x),
+\end{equation}
+
+donde $\mathcal{G}$ es una rejilla uniforme de $J=2{,}000$ puntos
+en $[\min X_i, \max X_i]$. La notaci\'on $\arg\max$ denota el punto $x$ donde $\hat{f}_h$ alcanza su valor m\'aximo. Con $J=2{,}000$ puntos
+en un rango t\'ipico de $40\,{}^\circ\mathrm{C}$, la resoluci\'on
+es $\Delta x=0.02\,{}^\circ\mathrm{C}$, cinco veces m\'as fina
+que la precisi\'on de los term\'ometros, de modo que los errores
+de discretizaci\'on son despreciables.
+
+\subsection{La variable de excedencia}\label{subsec:excedencia}
+
+A partir de $\mu^*$ se define la variable de excedencia
+
+\begin{equation}\label{eq:Ti}
+T_i = \max(X_i - \mu^*,\;0),\qquad i=1,\ldots,N.
+\end{equation}
+
+\medskip
+
+La variable $T_i$ mide cu\'antos grados supera la temperatura del
+d\'ia~$i$ al valor modal de referencia. Para los d\'ias con
+$X_i\leq\mu^*$, se tiene $T_i=0$. Para los d\'ias con
+$X_i>\mu^*$, la excedencia es la diferencia positiva
+$T_i=X_i-\mu^*$, que puede tomar cualquier valor continuo en
+$(0,\infty)$. Esta mezcla de un valor puntual y una componente
+continua requiere un modelo distribucional especial.
+
+Así pues, cuando $T>0$, la
+distribuci\'on condicional de~$T$ dado~$T>0$ se modela como Weibull
+con par\'ametros~$(k,\lambda)$:
+
+\begin{equation}\label{eq:dist_cond}
+P(T\leq t \mid T>0) = F(t;\,k,\lambda),\qquad t>0.
+\end{equation}
+
+El par\'ametro~$k$ en la ecuaci\'on~\eqref{eq:dist_cond} caracteriza
+la forma de la cola derecha de la distribuci\'on de temperatura
+original por encima de~$\mu^*$. Estimar~$k$ y~$\lambda$ con
+precisi\'on a partir de datos agrupados es el problema inferencial
+central que aborda la metodolog\'ia de la
+Secci\'on~\ref{sec:estimation}.
+
+
+\subsection{El modelo de mezcla}
+
+Las distribuciones de Weibull est\'andar se definen sobre
+$(0,\infty)$ y son absolutamente continuas: asignan probabilidad
+cero a cualquier valor puntual aislado. Si se intenta ajustar
+directamente una Weibull a la variable~$T_i$ sin tratar la masa
+en cero, se produce una inconsistencia, pues la distribuci\'on
+te\'orica dice que $P(T=0)=0$, mientras que los datos muestran
+$P(T=0)\approx 0.5$. El m\'etodo de ajuste intenta compensar esta discrepancia deformando los par\'ametros de la distribuci\'on,
+produciendo estimaciones sesgadas de~$k$ y~$\lambda$.
+
+Tomando la ley de probabilidad total como punto de partida, para cualquier valor $t>0$, la probabilidad de que $T\leq t$
+puede descomponerse condicionando en los dos eventos mutuamente
+excluyentes $\{T=0\}$ y $\{T>0\}$:
+
+\begin{align}
+P(T\leq t)
+  &= P(T\leq t\mid T=0)\,P(T=0)
+   + P(T\leq t\mid T>0)\,P(T>0) \notag \\
+  &= 1\cdot p_0 + P(T\leq t\mid T>0)\cdot (1-p_0),
+    \label{eq:pt_total}
+\end{align}
+
+\medskip
+
+donde el primer t\'ermino es~1 porque si $T=0$ y $t>0$, se
+cumple siempre $T\leq t$, y se ha denotado $p_0=P(T=0)$.
+La distribuci\'on condicional $P(T\leq t\mid T>0)$ es lo que
+se modela mediante la Weibull de dos par\'ametros:
+$P(T\leq t\mid T>0)=F(t;\,k,\lambda)$.
+Sustituyendo en~\eqref{eq:pt_total} se obtiene el
+\emph{modelo de mezcla}:
+
+\begin{equation}\label{eq:mezcla}
+F_{\mathrm{mix}}(t;\,k,\lambda)
+  = \begin{cases}
+    p_0 & t=0,\\[6pt]
+    p_0 + (1-p_0)\,F(t;\,k,\lambda) & t>0.
+    \end{cases}
+\end{equation}
+
+\medskip
+
+Los par\'ametros de la Weibull se interpretan ahora
+exclusivamente sobre los d\'ias que son excedencias positivas:
+$k$ caracteriza c\'omo decrece la probabilidad de superar un
+umbral dado dentro de la poblaci\'on de d\'ias calurosos,
+y $\lambda$ establece la escala t\'ipica de esas excedencias.
+
+\medskip
+
+La probabilidad de masa en cero se estima directamente de
+los datos:
+
+\begin{equation}\label{eq:p0}
+\hat{p}_0
+  = \frac{\#\{i : X_i\leq\mu^*\}}{N}.
+\end{equation}
+
+\medskip
+
+A diferencia del caso con la mediana como umbral, donde
+$\hat{p}_0=0.5$ exactamente por construcci\'on, con el umbral
+modal $\hat{p}_0$ es una cantidad estimada que depende de la forma real de la distribuci\'on. En ciudades con
+distribuciones menos asim\'etricas, $\hat{p}_0$ puede acercarse
+a 0.5; en climas con cola calurosa pronunciada, puede alejarse
+sustancialmente como se observa en la Tabla \ref{tab:p0}.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Ciudad       & 1940--1968 & 1969--1996 & 1997--2026 \\
+\midrule
+CDMX         & $\hat{p}_0$ = 0.4796  & $\hat{p}_0$ = 0.4979 & $\hat{p}_0$ = 0.4782 \\
+Chihuahua    & $\hat{p}_0$ = 0.7612  & $\hat{p}_0$ = 0.6624 & $\hat{p}_0$ = 0.6828 \\
+Guadalajara  & $\hat{p}_0$ = 0.4066 & $\hat{p}_0$ = 0.4321 & $\hat{p}_0$ = 0.4693 \\
+Monterrey    & $\hat{p}_0$ = 0.7506 & $\hat{p}_0$ = 0.6372 & $\hat{p}_0$ = 0.6759 \\
+Phoenix      & $\hat{p}_0$ = 0.8199 & $\hat{p}_0$ = 0.8180 & $\hat{p}_0$ = 0.8190 \\
+\bottomrule
+\end{tabular}
+\caption{Probabilidad empírica de la clase cero $\hat{p}_0 = P(T=0)$
+por ciudad y período.}
+\label{tab:p0}
+\end{table}.
+
+%% ════════════════════════════════════════════════════════════
+\section{Construcción de clases y el papel de~$n$}\label{sec:classes}
+%% ════════════════════════════════════════════════════════════
+
+La regresi\'on WLS de la Secci\'on~\ref{sec:estimation} opera sobre
+datos agrupados: las excedencias positivas $\{T_i:T_i>0\}$ se
+dividen en $n$~clases, cada una caracterizada por un valor
+representativo~$t_j$ y una frecuencia~$f_j$. El n\'umero de
+clases~$n$ es un par\'ametro impl\'icito del procedimiento
+completo: afecta las posiciones de trazado asignadas a cada clase,
+los pesos empleados en la regresi\'on y, en \'ultimo t\'ermino,
+los par\'ametros~$(k,\lambda)$ estimados y la bondad de ajuste.
+
+En el contexto de temperatura, con datos que abarcan varias d\'ecadas y cinco
+ciudades con distribuciones distintas, un~$n$ fijo universal
+ser\'ia inapropiado. Se le trata por tanto como una cantidad
+determinada por los datos.
+
+Se distinguen dos tipos de clase.
+
+La primera clase, que contiene todas las observaciones con $T_i = 0$, corresponde a la masa de probabilidad acumulada por todos los
+d\'ias en que la temperatura no supera el umbral modal $\mu^*$. Su
+peso emp\'irico es $\hat{p}_0 = P(T = 0) = P(X \leq \mu^*)$. Su valor representativo se fija en
+$t_1=\varepsilon=0.01\,{}^\circ\mathrm{C}$ para permitir la transformaci\'on logar\'itmica requerida por la linealizaci\'on
+Weibull.
+
+Esta clase se introduce para modelar expl\'icitamente la estructura
+mixta de la variable $T = \max(X - \mu^*, 0)$, ya que la distribuci\'on
+de mezcla $F_{\text{mix}}$ requiere que la masa en cero est\'e separada de la componente
+Weibull continua. La clase cero no participa en la regresi\'on lineal
+ponderada (WLR) que estima los par\'ametros $k$ y $\lambda$; su \'unica
+funci\'on es asegurar que la FDA emp\'irica y la FDA ajustada se comparen
+en la misma escala.
+
+\medskip
+
+El segundo tipo de clases, las positivas, son los intervalos semibiertos
+$(0,h_{\mathrm{FD}}]$, $(h_{\mathrm{FD}},2h_{\mathrm{FD}}]$,
+$\ldots$, con valores representativos $t_2=h_{\mathrm{FD}}$,
+$t_3=2h_{\mathrm{FD}}$, etc.
+
+\medskip
+
+El ancho de clase $h_{\mathrm{FD}}$ se determina mediante la regla
+de Freedman--Diaconis \citep{freedman1981}:
+
+\begin{equation}\label{eq:FD}
+h_{\mathrm{FD}}
+  = \frac{2\,\mathrm{IQR}(T)}{N_+^{1/3}},
+\end{equation}
+
+\medskip
+
+donde $\mathrm{IQR}(T)=Q_{0.75}(T)-Q_{0.25}(T)$ es el rango
+intercuart\'ilico de todas las excedencias $T_i\geq 0$ y
+$N_+$~es el n\'umero de excedencias positivas.
+
+\medskip
+
+Partiendo de la clase cero y las clases positivas generadas por
+la ecuaci\'on~\eqref{eq:FD}, la construcci\'on contin\'ua hasta
+encontrar clases vac\'ias. Asimismo, las clases con frecuencia nula se eliminan de la cola para obtener
+el conjunto activo de $n$~clases. La \'ultima clase ---la que lleva
+la frecuencia acumulada a 1--- tambi\'en se excluye de
+la regresi\'on WLS, pues requerir\'ia evaluar
+$Y_j=\ln[-\ln(1-p_j)]$ en $p_j=1$, que es indefinido.
+
+%% ════════════════════════════════════════════════════════════
+\section{Estimaci\'on WLS y optimizaci\'on
+         adaptativa de~$a$}\label{sec:estimation}
+%% ════════════════════════════════════════════════════════════
+
+La FDA Weibull permite una linearización exacta. Tomando logaritmos dos veces en la ecuaci\'on~\eqref{eq:fda}:
+
+\begin{align}
+1 - F(t) &= \exp\!\left\{-\!\left(\frac{t}{\lambda}\right)^{\!k}\right\}
+  \nonumber\\[4pt]
+-\ln[1-F(t)] &= \left(\frac{t}{\lambda}\right)^{\!k}
+  \nonumber\\[4pt]
+\ln\!\bigl[-\ln(1-F(t))\bigr] &= k\ln t - k\ln\lambda.
+  \label{eq:doble_log}
+\end{align}
+
+\medskip
+
+Definiendo las variables transformadas para la $j$-\'esima clase positiva
+con valor representativo~$t_j$ y posici\'on de trazado~$p_j$:
+
+\begin{equation}\label{eq:XY}
+X_j = \ln(t_j),\qquad Y_j = \ln[-\ln(1-p_j)],
+\end{equation}
+
+\medskip
+la ecuaci\'on~\eqref{eq:doble_log} queda como una regresi\'on lineal exacta:
+\begin{equation}\label{eq:lineal}
+Y_j = k\,X_j + b,\qquad b = -k\ln\lambda.
+\end{equation}
+
+\medskip
+
+La pendiente de la regresi\'on~\eqref{eq:lineal} estima directamente~$k$,
+y el intercepto~$b$ permite recuperar~$\lambda$:
+
+\begin{equation}\label{eq:parametros}
+\hat{k} = \frac{S_{XY}}{S_{XX}},\qquad
+\hat{\lambda} = \exp\!\left(-\frac{b}{k}\right)
+              = \exp\!\left(-\frac{\bar{Y}_w - \hat{k}\,\bar{X}_w}
+                                   {\hat{k}}\right),
+\end{equation}
+
+\medskip
+
+donde las medias ponderadas se definen como
+
+\begin{align}
+\bar{X}_w &= \frac{\sum_j w_j X_j}{\sum_j w_j},\qquad
+\bar{Y}_w  = \frac{\sum_j w_j Y_j}{\sum_j w_j}
+\end{align}
+
+\medskip
+
+y las sumas de productos son
+
+\begin{align}
+S_{XY} &= \sum_j w_j(X_j - \bar{X}_w)(Y_j - \bar{Y}_w),\quad
+S_{XX}  = \sum_j w_j(X_j - \bar{X}_w)^2.\label{eq:sumas_w}
+\end{align}
+
+\medskip
+El coeficiente de determinaci\'on de la regresi\'on es
+
+\begin{equation}\label{eq:R2_wlr}
+R^2_{\mathrm{WLR}} = \frac{S_{XY}^2}{S_{XX}\,S_{YY}},\qquad
+S_{YY} = \sum_j w_j(Y_j - \bar{Y}_w)^2.
+\end{equation}
+
+\medskip
+
+Finalmente, siguiendo \citet{olivera2019} y \citet{bergman1986}, se considera la
+función de peso:
+
+\begin{equation}\label{eq:peso_A}
+w_j = (1 - p_j)\,[\ln(1-p_j)]^2,
+\end{equation}
+
+\subsection{Estimación adaptativa de \textbf{$a$}}\label{subsec:familia}
+
+La familia sim\'etrica de un par\'ametro~$a\in[0,\tfrac{1}{2})$ engloba
+los estimadores cl\'asicos:
+\begin{equation}\label{eq:familia}
+p_i(a) = \frac{i-a}{n + 1 - 2a},\qquad i=1,\ldots,n.
+\end{equation}
+
+\medskip
+La posici\'on de la clase cero se fija siempre en
+$p_1^{(0)}=1/(n+1)$, correspondiente a $a=0$ (regla de Weibull).
+Esto asegura que la elecci\'on de~$a$ para las clases positivas no
+propague un sesgo a trav\'es de la clase que queda excluida de la regresi\'on.
+
+Para las clases positivas, el parámetro~$a$ se determina mediante un
+procedimiento de optimización numérica, seleccionando el valor que
+maximiza la bondad de ajuste del modelo Weibull. El parámetro obtenido
+se emplea posteriormente en la estimación de los parámetros de forma y
+escala de la distribución.
+
+\subsection{Algoritmo operacional}\label{subsec:algoritmo}
+
+El procedimiento propuesto para el cálculo de los parámetros Weibull $k$ y $\lambda$ se resume a continuación.
+
+\begin{enumerate}
+\item Estimar $\mu^*$ mediante KDE (ecuaciones~\eqref{eq:kde}--\eqref{eq:mustar})
+  y calcular $T_i=\max(X_i-\mu^*,0)$.
+\item Determinar $h_{\mathrm{FD}}$ (ecuaci\'on~\eqref{eq:FD}) y
+  construir la clase cero y las clases positivas.
+\item Eliminar las clases vac\'ias de la cola e identificar $n$.
+\item Obtener estimaciones preliminares $(\tilde{k},\tilde{\lambda})$ mediante m\'axima verosimilitud.
+\item Refinar los par\'ametros mediante optimizaci\'on conjunta, obteniendo
+$(k,\lambda)$.
+\end{enumerate}
+
+%% ════════════════════════════════════════════════════════════
+\section{\'Area de estudio y datos}
+%% ════════════════════════════════════════════════════════════
+
+Se obtuvieron registros de temperatura máxima diaria para cinco ciudades con climas distintos dentro de América del
+Norte: Ciudad de México~(CDMX), Guadalajara, Monterrey, Chihuahua y Phoenix~(AZ, EUA). Las cuatro primeras se ubican en diferentes
+elevaciones y latitudes dentro de México; Phoenix representa un clima desértico árido a baja elevación en el suroeste de los
+Estados Unidos.
+
+Los datos de temperatura m\'axima diaria se obtuvieron del conjunto
+de datos \emph{ERA5 hourly data on single levels
+from 1940 to present} \citep{hersbach2023era5}, conjunto de
+rean\'alisis clim\'atico global producido por el Centro Europeo de
+Predicci\'on Meteorol\'ogica a Plazo Medio (ECMWF) y distribuido a
+trav\'es del Climate Data Store del Servicio de Cambio Clim\'atico
+de Copernicus~(C3S) \citep{hersbach2020era5}, y comprenden observaciones diarias de
+temperatura máxima para los tres períodos analizados:
+1940--1968, 1969--1996 y 1997--2026. Las cinco ciudades disponen
+de registros completos. El número de
+observaciones por ciudad y período varía dependiendo del número de días por año.
+
+La Figura~\ref{fig:kde} muestra la densidad KDE estimada de la
+temperatura máxima diaria para cada ciudad y período, junto con
+el umbral modal~$\mu^*$ identificado en cada caso. Se observa que
+la distribución de temperatura varía considerablemente entre
+ciudades y que,
+dentro de cada ciudad, la posición del pico de la densidad (umbral
+modal) muestra una tendencia ascendente entre períodos en la mayoría
+de los casos.
+
+\begin{figure}[ht]
+    \centering
+
+    % Fila 1
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_cdmx_v2.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_chihuahua_v2.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_guadalajara_v2.png}
+    \end{minipage}
+
+    \vspace{0.5cm}
+
+    % Fila 2
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_monterrey_v2.png}
+    \end{minipage}
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_phoenix_v2.png}
+    \end{minipage}
+
+    \caption{Densidad KDE de la temperatura máxima diaria para cada
+    ciudad y los tres períodos analizados. La línea discontinua vertical
+    indica el umbral modal~$\mu^*$ estimado para cada período.}
+    \label{fig:kde}
+\end{figure}
+
+%% ════════════════════════════════════════════════════════════
+\section{Resultados}\label{sec:results}
+%% ════════════════════════════════════════════════════════════
+
+El modelo de distribución de mezcla Weibull ajustado mediante
+el procedimiento descrito en la Sección~\ref{sec:estimation}
+produce un ajuste satisfactorio. El coeficiente de determinación
+$R^2$ supera 0.99 en todos los casos. El estadístico de Kolmogorov--Smirnov
+(KS) sobre los datos individuales $T_i > 0$ oscila entre 0.015
+y 0.048; en la mayoría de los casos el valor~$p$ asociado es
+inferior a 0.05, lo que refleja la potencia elevada del test.
+
+\begin{table}[ht]
+\centering
+\normalem
+\begin{tabular}{llrrrrrrr}
+\toprule
+Ciudad & Período & $\hat\mu^*$ & $k$ & $\lambda$ & $R^2$ & KS & $p_{\mathrm{KS}}$ \\
+\midrule
+CDMX        & 1940–1968 & 19.54 & 0.884 & 0.367 & 0.9972 & 0.027 & 0.001 \\
+        & 1969–1996 & 20.67 & 0.856 & 0.361 & 0.9993 & 0.015 & 0.191 \\
+        & 1997–2026 & 22.03 & 0.880 & 0.335 & 0.9971 & 0.023 & 0.006 \\
+\midrule
+Chihuahua   & 1940–1968 & 30.62 & 0.727 & 0.286 & 0.9978 & 0.035 & 0.005 \\
+   & 1969–1996 & 28.50 & 0.730 & 0.172 & 0.9974 & 0.034 & 0.001 \\
+   & 1997–2026 & 31.08 & 0.705 & 0.188 & 0.9970 & 0.045 & 0.000 \\
+\midrule
+Guadalajara & 1940–1968 & 25.00 & 0.862 & 0.244 & 0.9924 & 0.038 & 0.000 \\
+ & 1969–1996 & 25.72 & 0.878 & 0.265 & 0.9956 & 0.029 & 0.000 \\
+ & 1997–2026 & 27.29 & 0.869 & 0.290 & 0.9961 & 0.029 & 0.000 \\
+\midrule
+Monterrey   & 1940–1968 & 32.16 & 0.674 & 0.258 & 0.9941 & 0.048 & 0.000 \\
+   & 1969–1996 & 29.78 & 0.666 & 0.175 & 0.9951 & 0.048 & 0.000 \\
+   & 1997–2026 & 31.95 & 0.652 & 0.196 & 0.9957 & 0.045 & 0.000 \\
+\midrule
+Phoenix     & 1940–1968 & 38.65 & 0.712 & 0.269 & 0.9961 & 0.045 & 0.001 \\
+     & 1969–1996 & 39.09 & 0.699 & 0.237 & 0.9986 & 0.037 & 0.011 \\
+     & 1997–2026 & 39.83 & 0.708 & 0.268 & 0.9975 & 0.035 & 0.017 \\
+\bottomrule
+\end{tabular}
+\caption{Parámetros estimados del modelo de mezcla Weibull por ciudad
+y período}
+\label{tab:parametros}
+\end{table}
+
+La comparación entre ciudades revela que Monterrey y Phoenix
+presentan los menores valores de $k$ ($0.65$--$0.72$),
+lo que indica colas de excedencias relativamente más pesadas:
+en estas ciudades, una vez que la temperatura supera el nivel
+modal, la probabilidad de excedencias adicionales (\textit{eventos extremos})
+decrece más gradualmente. CDMX y Guadalajara muestran los
+mayores valores de $k$ ($0.86$--$0.88$), con colas
+más ligeras, coherentes con su altitud y clima más templado.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/fig6_tendencias_v2.png}
+  \caption{Evolución temporal del umbral modal $\mu^*$ por ciudad y
+  período. Varias ciudades muestran una tendencia ascendente.}
+  \label{fig:tendencias}
+\end{figure}
+
+En Ciudad de México, $\mu^*$ aumenta de
+$19.54\,{}^\circ\text{C}$ en 1940--1968 a $22.03\,{}^\circ\text{C}$
+en 1997--2026, un incremento de $2.49\,{}^\circ\text{C}$ en ocho
+décadas. Este es el desplazamiento más pronunciado del conjunto
+analizado. Guadalajara muestra un patrón similar, con
+un aumento de $25.00$ a $27.29\,{}^\circ\text{C}$
+($\Delta\mu^* = 2.29\,{}^\circ\text{C}$). Chihuahua y Monterrey presentan trayectorias
+no monótonas: ambas exhiben una reducción en el segundo período
+respecto al primero, seguida de una recuperación en el tercero. La tabla \ref{tab:excedencias} presenta las probabilidades estimadas de que la temperatura máxima diaria supere los umbrales
+de 30, 35 y 40\,°C.
+
+\begin{table}[ht]
+\centering
+\normalem
+\begin{tabular}{llrrr}
+\toprule
+Ciudad & Período &
+  $P(X>30\,{}^\circ\text{C})$ &
+  $P(X>35\,{}^\circ\text{C})$ &
+  $P(X>40\,{}^\circ\text{C})$ \\
+\midrule
+CDMX        & 1940–1968 &  0.28  & 0.016 & 0.001 \\
+        & 1969–1996 &  0.37  & 0.015 & 0.001 \\
+        & 1997–2026 &  1.50  & 0.109 & 0.007 \\
+\midrule
+Chihuahua   & 1940–1968 & 27.48 & 2.70  & 0.048 \\
+   & 1969–1996 & 25.03  & 3.64  & 0.260 \\
+   & 1997–2026 & 38.38  & 8.64  & 0.489 \\
+\midrule
+Guadalajara & 1940–1968 & 12.26  & 1.75  & 0.211 \\
+ & 1969–1996 & 14.12  & 1.98  & 0.235 \\
+ & 1997–2026 & 21.29  & 2.54  & 0.239 \\
+\midrule
+Monterrey   & 1940–1968 & 37.89  & 7.42  & 0.106 \\
+   & 1969–1996 & 35.62  & 4.44  & 0.114 \\
+   & 1997–2026 & 45.97  & 10.97 & 0.268 \\
+\midrule
+Phoenix     & 1940–1968 & 47.95 & 32.29 & 19.42 \\
+     & 1969–1996 & 48.68 & 33.87 & 14.81 \\
+     & 1997–2026 & 51.96 & 36.60 & 17.71 \\
+\bottomrule
+\end{tabular}
+\caption{Probabilidades estimadas de excedencia (\%) de umbrales
+de temperatura por ciudad y período.}
+\label{tab:excedencias}
+\end{table}
+
+
+Los cambios entre períodos son especialmente notorios para Ciudad de México: $P(X>30\,{}^\circ\text{C})$ aumenta
+de 0.28\% en 1940--1968 a 1.50\% en 1997--2026. Este cambio está impulsado principalmente por el desplazamiento de $\mu^*$ de 19.5 a
+22.0\,°C.
+
+Para Chihuahua, el aumento en $P(X>35\,{}^\circ\text{C})$
+es particularmente pronunciado: de 2.70\% en 1940--1968 a 8.64\% en 1997--2026,
+multiplicándose por un factor de 3.2. El aumento en
+$P(X>40\,{}^\circ\text{C})$ es aún más pronunciado en términos
+relativos: de 0.048\% a 0.489\% (factor 10.2), aunque las
+probabilidades absolutas siguen siendo pequeñas.
+
+En Phoenix, un caso naturalmente atípico por su clima árido, las probabilidades de excedencia de umbrales muy altos ($>40\,{}^\circ\text{C}$) presentan un patrón no monótono:
+19.4\% (1940--1968), 14.8\% (1969--1996) y 17.7\% (1997--2026).
+La reducción en el segundo período puede relacionarse con una
+ligera disminución de $k$ (de 0.712 a 0.699) que compensa
+parcialmente el aumento de $\mu^*$, aunque también puede reflejar
+variabilidad natural en la distribución de los extremos.
+
+\begin{figure}[ht]
+    \centering
+
+    % Fila 1
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig5_excedencia_cdmx_v2.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig5_excedencia_chihuahua_v2.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig5_excedencia_phoenix_v2.png}
+    \end{minipage}
+  \caption{\centering Curvas de probabilidad de excedencia $P(X>\theta)$ por
+  ciudad y período}
+    \label{fig:excedencia}
+\end{figure}
+
+\subsection{Síntesis y contrastación de hipótesis}
+\label{subsec:hipotesis}
+
+Los resultados permiten responder a las hipótesis planteadas en
+la Sección~\ref{sec:intro}.
+
+\textbf{H1.} Por un lado, se tiene que la forma de la distribución de excedencias no cambia considerablemente en el tiempo dentro de cada
+ciudad, pues nótese que el parámetro $k$ varía menos de 3.5\% entre períodos
+dentro de cada ciudad. No obstante, la tendencia
+decreciente de $k$ en Monterrey (de 0.674 a 0.652)
+merece atención: una cola progresivamente más pesada implicaría
+que los eventos extremos más intensos se vuelven relativamente
+más frecuentes incluso en ausencia de un desplazamiento del nivel
+modal, lo que refuerza el riesgo en esa ciudad.
+
+\textbf{H2.}
+CDMX, Guadalajara y Phoenix muestran incrementos monotónicos de
+$\mu^*$ entre períodos. En estas ciudades, el desplazamiento del
+umbral modal es el principal mecanismo para explicar el aumento
+en las probabilidades de excedencia. El caso más ilustrativo es
+CDMX: una ganancia de 2.5\,°C en $\mu^*$, junto con la estabilidad
+de $k$, es suficiente para multiplicar por cinco la
+probabilidad de superar 30\,°C.
+
+%% ════════════════════════════════════════════════════════════
+\section{Conclusiones}\label{sec:conclusions}
+
+Este trabajo propone y aplica una metodolog\'ia adaptativa para modelar
+la cola derecha de la distribuci\'on de temperatura m\'axima diaria
+mediante la distribuci\'on Weibull de dos par\'ametros. Los resultados
+obtenidos para las cinco ciudades y tres per\'iodos analizados permiten
+responder las preguntas planteadas en la introducci\'on.
+
+El umbral modal~$\mu^*$, que representa la temperatura m\'axima m\'as
+frecuente, muestra una tendencia ascendente en la mayor\'ia de las
+ciudades analizadas. En Ciudad de M\'exico, el incremento acumulado
+entre el primer per\'iodo (1940--1968) y el tercero (1997--2026) es de
+$2.5\,{}^\circ\mathrm{C}$; en Guadalajara, de
+$2.3\,{}^\circ\mathrm{C}$; en Phoenix, de $1.2\,{}^\circ\mathrm{C}$.
+
+Asimismo, el par\'ametro de forma $k$ permanece comparativamente estable dentro
+de cada ciudad a lo largo de los tres per\'iodos (con variaciones menores al
+4\% en todos los casos), lo que apoya la hip\'otesis~H1. No es posible,
+a partir de la metodolog\'ia utilizada, descartar cambios estad\'isticamente
+significativos en la forma sin un an\'alisis de inferencia formal
+complementario. Los cambios en $\mu^*$ son los m\'as sistem\'aticos
+y de mayor magnitud. Los cambios en $\lambda$ son de menor magnitud y
+menos monotónicos. El par\'ametro $k$ es el m\'as estable.
+
+Ahora bien, \textit{\textquestiondown Cambian las probabilidades de
+superar umbrales cr\'iticos?} S\'i, y en algunos casos de forma
+considerable. La probabilidad de superar $30\,{}^\circ\mathrm{C}$ en
+CDMX aumenta m\'as de cinco veces entre el primer y el tercer
+per\'iodo. En Chihuahua, la probabilidad de
+superar $35\,{}^\circ\mathrm{C}$ se triplica entre los mismos
+per\'iodos, evidenciando que los climas
+semi\'aridos y continentales, con mayor amplitud t\'ermica estival,
+presentan una mayor sensibilidad a los desplazamientos del umbral
+modal.
+
+Los resultados sugieren que, aunque la forma de la distribuci\'on de
+extremos t\'ermicos no cambie sustancialmente, el desplazamiento del
+umbral modal hacia temperaturas m\'as altas es suficiente para incrementar
+de forma perceptible la probabilidad de superar niveles cr\'iticos. Dado que
+la demanda de energ\'ia para climatizaci\'on (especialmente aire
+acondicionado) aumenta no linealmente con la temperatura, incrementos
+moderados en $\mu^*$ pueden tener consecuencias sobre
+la infraestructura energ\'etica urbana. Este efecto es especialmente
+relevante en ciudades de r\'apido crecimiento como CDMX, donde la
+penetraci\'on del aire acondicionado ha aumentado significativamente en
+las \'ultimas d\'ecadas.
+
+%% ════════════════════════════════════════════════════════════
+\bibliography{refs_weibull}
+
+\end{document}

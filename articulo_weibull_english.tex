@@ -1,0 +1,1022 @@
+\documentclass[APA,STIX1COL]{WileyNJD-v2}
+
+\articletype{Special Issue Paper}
+
+\received{}
+\revised{}
+\accepted{}
+
+\raggedbottom
+
+\begin{document}
+
+\title{Extreme Maximum Temperature Events in Mexico: A Weibull Distribution Approach with Adaptive Plotting Positions}
+
+\author[1]{Sazcha Olivera}
+
+\authormark{OLIVERA \textsc{et al}}
+
+\address[1]{\orgdiv{Department of Design Theory and Processes, Communication Sciences and Design}, 
+\orgname{Universidad Aut\'onoma Metropolitana--Cuajimalpa},
+\orgaddress{\state{Mexico City}, \country{Mexico}}}
+
+\corres{Sazcha Olivera, Department of Design Theory and Processes, Communication Sciences and Design, Universidad Aut\'onoma
+Metropolitana--Cuajimalpa, 05370 Mexico City, Mexico.
+\email{satzcha@msn.com}}
+
+%% ─────────────────────────────────────────────────────────────
+\abstract[Abstract]{
+An adaptive methodology is proposed for modeling the right tail of
+daily maximum temperature exceedances using a two-parameter Weibull
+mixture model, extending the weighted least-squares framework of
+\citet{olivera2019} along three dimensions:
+(i)~the reference threshold is estimated as the modal temperature
+via kernel density estimation (KDE);
+(ii)~the number of bins in the grouped histogram is determined
+by the Freedman--Diaconis rule; and
+(iii)~the parameter~$a$ of the symmetric plotting-position
+family $p_i(a)=(i-a)/(n+1-2a)$ is optimized by adapting the
+plotting position to the data, an operation theoretically justified
+for the subfamily $0<k<1$.
+The methodology is applied to daily maximum temperature records
+from five cities in Mexico and the southwestern United States
+across three twenty-year periods.
+Results show that the modal threshold~$\mu^*$ exhibits an upward
+trend in most of the cities analyzed, while the shape
+parameter~$k$ remains comparatively stable within each
+region, indicating that changes in thermal extremes are expressed
+primarily as shifts in the typical temperature level.
+}
+
+\keywords{Weibull distribution; plotting positions; parameter~$a$;
+kernel density estimation; extreme temperatures; Weibull tail;
+class construction; Freedman--Diaconis; Bergman weights.}
+
+\jnlcitation{\cname{\author{Olivera S.}}
+             (\cyear{2026}),
+             \ctitle{Extreme Maximum Temperature Events in Mexico: A Weibull
+             Distribution Approach with Adaptive Plotting
+             Positions},
+             \cjournal{[Journal]}, \cvol{00:1--XX}.}
+
+\maketitle
+
+%% ════════════════════════════════════════════════════════════
+\section{Introduction}\label{sec:intro}
+%% ════════════════════════════════════════════════════════════
+
+The Weibull distribution occupies a prominent place in applied
+statistics because it combines a relatively simple formulation
+with notable flexibility of shape. Since its earliest applications
+to the analysis of material strength \citep{weibull1951}, its use
+has extended to hydrology, climatology, reliability engineering,
+and risk analysis. In all of these fields, interest lies not in
+the center of the distribution but in its right tail: the
+probability that the variable exceeds high thresholds, rarely
+observed but with significant consequences.
+
+When the Weibull distribution is estimated via the probability
+plot, the ordered observations do not, by themselves, carry their
+cumulative probabilities. Each $x_{(i)}$ must be assigned a
+non-exceedance probability, known as a \emph{plotting position}~$p_i$.
+The choice of $p_i$ is not innocuous: it determines the coordinates
+of the linear regression on the probability plot and, consequently,
+the estimates of the shape~$k$ and scale~$\lambda$ parameters.
+
+A family that encompasses many of the classical rules is
+\begin{equation}\label{eq:familia_intro}
+p_i(a) = \frac{i - a}{n + 1 - 2a},\qquad 0 \leq a < \tfrac{1}{2}.
+\end{equation}
+The value $a=0$ generates the Weibull rule~\citep{weibull1951};
+$a\approx 0.30$ corresponds to the Benard and
+Bos-Levenbach approximation~\citeyearpar{benard1953};
+$a=0.375$ yields the Blom formula~\citeyearpar{blom1958};
+$a\approx 0.44$ gives Gringorten~\citeyearpar{gringorten1963};
+and the limit $a\to 0.5$ reproduces the Hazen position.
+Although these rules differ little numerically, their impact on
+estimated extreme quantiles can be substantial, particularly
+when the sample size is moderate and the distribution has a
+heavy tail.
+
+There is at the same time a well-established theoretical basis
+for plotting positions. If $X_{(i)}$ is the $i$th order statistic
+of a continuous sample, we define $U_{(i)}=F(X_{(i)})$ such that
+
+\begin{equation*}
+    U_{(i)}\sim\mathrm{Beta}(i,\,n+1-i)
+\end{equation*}
+
+and
+
+\begin{equation}
+    \mathbb{E}[U_{(i)}]=\frac{i}{n+1},
+\end{equation}
+
+\medskip
+
+which explains the Weibull rule \citep{makkonen2014}. However, the
+linearized fit uses the double-logarithmic transformation
+$g(p)=\ln[-\ln(1-p)]$, which is strictly convex. Consequently,
+Jensen's inequality implies that $g(\mathbb{E}[U_{(i)}])\neq
+\mathbb{E}[g(U_{(j)})]$, and the position that is exact on the
+probability scale does not minimize the bias on the transformed
+scale. The magnitude of this gap depends on the curvature of~$g$
+in the relevant probability range and therefore on the shape
+parameter~$k$ of the fitted model.
+
+\citet{goda1988,goda2010} determined through Monte Carlo simulation
+that the optimal plotting position for Weibull extremes depends
+explicitly on~$k$, providing calibrated coefficients for extreme
+wave analysis. Kim et~al. \citeyearpar{kim2012,kim2015} extended
+similar ideas to the generalized logistic distribution. Despite
+these precedents, common practice in climatology and hydrology
+continues to fix~$a$ in advance or to select the position that
+produces the largest~$R^2$ within the sample being analyzed, which
+introduces selection optimism without any guarantee of
+generalization.
+
+The immediate starting point for this investigation is
+\citet{olivera2019}. Their procedure compared plotting positions
+for the analysis of precipitation exceedances and used the weight
+function derived by Bergman \citeyearpar{bergman1986} to weight
+the linearized fit:
+
+\begin{equation}\label{eq:bergman_intro}
+w_i = (1 - p_i)\,[\ln(1-p_i)]^2.
+\end{equation}
+
+\medskip
+
+This also reveals a characteristic of the weight that is relevant
+for extreme value analysis: $w_i$ reaches its maximum at
+$p\approx 0.8647$ and tends to zero as $p\to 1$, so it does not
+assign the greatest weight to the sample maximum.
+\citet{olivera2019} showed that the choice of plotting position
+can alter conclusions about trends in extreme quantiles; however,
+they treated~$a$ as fixed across all samples.
+
+The present study proposes estimating a rule
+$\hat{a}=g(n,\tilde{k})$ within the symmetric
+family~\eqref{eq:familia_intro}, where $n$ is the number of
+classes and $\tilde{k}$ is a preliminary estimate of the shape
+parameter obtained without plotting positions. The primary domain
+is the Weibull with $0<k<1$: in this interval the distribution
+exhibits a stretched-exponential tail that decays more slowly than
+an exponential but does not constitute a power-law (Pareto) tail.
+This Weibull tail regime \citep{gardes2005,diebolt2008} is the
+empirically relevant one for maximum temperature exceedances in
+continental and semi-arid climates, where intense heat episodes
+are frequent but extreme heat has a physical upper bound that
+rules out power-law behavior.
+
+The methodology integrates, in addition to the optimization
+of~$a$, three data pre-processing contributions that address
+limitations of earlier implementations:
+
+\textbf{1. Modal threshold via KDE.}
+The threshold separating normal days from exceedances is
+estimated as the modal temperature using the kernel density
+estimator \citep{rosenblatt1956,parzen1962}. This reflects the
+most frequent temperature and allows the proportion of exceedances
+to be an estimated quantity rather than one fixed in advance.
+
+\textbf{2. Number of classes via Freedman--Diaconis.}
+The bin width used in the grouped regression is determined by the
+Freedman--Diaconis rule~\citeyearpar{freedman1981}, which is
+asymptotically optimal under weaker conditions than Sturges' rule
+and adapts the number of classes~$n$ to the size and spread of
+the data for each city and period.
+
+\textbf{3. Mixture model.}
+The exceedance variable $T_i=\max(X_i-\mu^*,0)$ is not purely
+continuous: it carries a point mass at $T=0$ for all days with
+$X_i\leq\mu^*$ and a continuous Weibull component for $T>0$.
+The explicit specification of the mixture distribution
+
+\begin{equation}\label{eq:mezcla_intro}
+F_{\mathrm{mix}}(t) = p_0 + (1-p_0)\,F(t;\,k,\lambda),
+\qquad t>0,
+\end{equation}
+
+is necessary so that the empirical and fitted distribution
+functions are compared on the same scale. Without this step, the
+empirical CDF starts at~$p_0\approx 0.5$ while the Weibull CDF
+starts at~0, producing artificially large residuals.
+
+The central research question is: \textit{Can changes in the right
+tail of the maximum temperature distribution be detected and
+quantified over multiple decades using a Weibull distribution
+fitted to threshold exceedances?}
+From this question two testable hypotheses are stated:
+
+\begin{enumerate}
+\item[\textbf{H1.}] \textbf{Stability of distributional form.}
+  The shape parameter~$k$ of the Weibull distribution fitted to
+  maximum temperature exceedances does not vary significantly
+  across the three periods analyzed within each city. Changes in
+  thermal extremes are reflected primarily in shifts of the modal
+  threshold~$\mu^*$ and the scale~$\lambda$, not in changes in
+  distributional shape.
+
+\item[\textbf{H2.}] \textbf{Displacement of extreme levels.}
+  The modal threshold~$\mu^*$ exhibits a positive trend across
+  periods in most of the cities analyzed. As a consequence, even
+  when distributional shape remains stable, the probabilities of
+  exceeding fixed critical thresholds increase across decades,
+  with implications for urban cooling energy demand.
+\end{enumerate}
+
+The proposed methodology allows both hypotheses to be tested
+through comparison of the estimated parameters~$(k,\lambda,\mu^*)$
+and the exceedance probabilities computed for climatically
+relevant thresholds.
+
+%% ════════════════════════════════════════════════════════════
+\section{The Weibull Distribution and the Tail Regime}
+\label{sec:weibull}
+%% ════════════════════════════════════════════════════════════
+
+To avoid the ambiguity that frequently arises in the literature
+from the interchange of the symbols~$\alpha$ and~$\beta$ across
+different traditions, the following notation is adopted: $k>0$
+for the shape parameter and $\lambda>0$ for the scale parameter
+\citep[see also][]{makkonen2014}. The cumulative distribution
+function (CDF) and survival function of the two-parameter Weibull
+distribution are
+\begin{equation}\label{eq:fda}
+F(x;\,k,\lambda)
+  = 1 - \exp\!\left\{-\left(\frac{x}{\lambda}\right)^{\!k}\right\},
+  \qquad x > 0,
+\end{equation}
+\begin{equation}\label{eq:supervivencia}
+S(x;\,k,\lambda)
+  = \exp\!\left\{-\left(\frac{x}{\lambda}\right)^{\!k}\right\},
+\end{equation}
+with hazard rate
+\begin{equation}\label{eq:hazard}
+h(x) = \frac{k}{\lambda}\left(\frac{x}{\lambda}\right)^{k-1}.
+\end{equation}
+
+\medskip
+This function is decreasing for $0<k<1$, constant for $k=1$
+(the exponential distribution), and increasing for $k>1$.
+
+Following \citet{gardes2005} and \citet{diebolt2008}, a
+distribution is said to belong to the \emph{Weibull tail class}
+if its survival function satisfies
+\begin{equation}\label{eq:cola_weibull}
+-\ln S(x) = x^\tau\,\ell(x),\qquad \tau>0,
+\end{equation}
+
+\medskip
+
+where $\ell$ is a slowly varying function at infinity. The
+standard Weibull is the canonical member of this class with
+$\tau=k$ and $\ell\equiv\lambda^{-k}$. For $0<k<1$, the tail is
+\emph{heavier than exponential} but \emph{lighter than any
+power law} (Pareto type); this intermediate regime rules out
+both heavy-tailed Pareto distributions and the pure exponential
+($k=1$). For $k>1$, tails decay rapidly; under temperature
+exceedances above the modal threshold~$\mu^*$, this reflects
+that very large events are infrequent once the typical temperature
+is exceeded.
+
+The regime of~$k$ also has a direct implication for the choice
+of plotting position. \citet{goda1988,goda2010} showed through
+Monte Carlo simulation that the optimal position for Weibull
+extremes depends on~$k$ and that the dependence is most
+pronounced when $k<1$, which motivates the adaptive approach
+proposed here.
+
+%% ════════════════════════════════════════════════════════════
+\section{Modal Threshold and the Mixture Model}
+\label{sec:threshold}
+%% ════════════════════════════════════════════════════════════
+
+\subsection{Motivation}
+
+Let $\{X_i\}_{i=1}^{N}$ denote the series of observed daily
+maximum temperatures in a given city and period. To construct the
+exceedance variable, a reference value~$\mu^*$ representing the
+``typical'' temperature must be fixed: days with $X_i\leq\mu^*$
+will be classified as normal and days with $X_i>\mu^*$ as
+exceedances. The choice of~$\mu^*$ conditions what proportion of
+the observations contributes to tail estimation and, therefore,
+the parameters of the fitted distribution.
+
+The most widely used alternative in the literature is the sample
+median~$\hat{m}$. Its main limitation is that, by construction,
+it forces approximately 50\% of days to be classified as
+exceedances, regardless of the actual asymmetry of the
+distribution. In cities with an extended right tail---such as
+Chihuahua or Phoenix, where extreme heat episodes shift the
+50th percentile upward---this causes moderately hot days to be
+classified as exceedances, distorting the identification of
+genuinely atypical or extreme events.
+
+Instead, the \emph{mode} of the distribution is proposed as
+a threshold~$\mu^*$ reflecting the most frequently occurring
+temperature. The mode imposes no prior fraction of exceedances;
+the value $\hat{p}_0=P(T=0)$ is determined by the data
+themselves. However, the empirical mode is unstable: small
+changes in the rounding criterion can shift it by several tenths
+of a degree, and with thousands of records it may not be unique.
+The frequency histogram avoids the rounding problem but introduces
+arbitrariness in the choice of interval boundaries and produces a
+step-function curve, which is inadequate for locating a
+continuous maximum.
+
+\emph{Kernel density estimation} (KDE) resolves both
+difficulties: it smooths the empirical distribution, producing a
+differentiable curve whose maximum constitutes the proposed
+estimator~$\mu^*$.
+
+\subsection{The Kernel Density Estimator}\label{subsec:kde}
+
+Let $K:\mathbb{R}\to[0,\infty)$ be a kernel function and $h>0$
+the bandwidth controlling the width of each bell. The KDE at a
+generic point~$x$ is defined as \citep{rosenblatt1956,parzen1962}:
+
+\begin{equation}\label{eq:kde}
+\hat{f}_h(x)
+  = \frac{1}{Nh}\sum_{i=1}^{N}
+    K\!\left(\frac{x - X_i}{h}\right).
+\end{equation}
+
+\medskip
+
+The standard Gaussian kernel is adopted:
+\begin{equation}\label{eq:kde_gauss}
+K(u) = \frac{1}{\sqrt{2\pi}}\,e^{-u^2/2},
+\end{equation}
+
+\medskip
+
+so that each observation contributes a normal density with mean
+$X_i$ and standard deviation~$h$. The estimator is therefore the
+equally-weighted mixture of $N$ normal distributions, one
+centered at each observation.
+
+The Gaussian kernel is standard in practice because it produces
+everywhere-differentiable curves and imposes no compact support,
+making it computationally convenient and statistically preferable
+when the underlying density is continuous and free of abrupt
+discontinuities, as is the case with temperature.
+
+\subsubsection{Scott's Rule and Modal Threshold Estimation}
+
+The parameter~$h$ governs the smoothness of the curve. Too
+small a value reproduces each observation individually, while
+too large a value flattens the curve until the distributional
+structure is lost. An optimal value balances bias and variance.
+
+Formally, the mean integrated squared error has the asymptotic
+decomposition
+
+\begin{equation}\label{eq:mise}
+\mathrm{MISE}(h)
+  \approx \underbrace{\frac{h^4}{4}
+            \int[f''(x)]^2\,dx}_{\mathrm{bias}^2}
+  + \underbrace{\frac{1}{Nh}
+            \int K^2(u)\,du}_{\mathrm{variance}}.
+\end{equation}
+
+\medskip
+
+Minimizing with respect to~$h$ shows that the optimum satisfies
+$h^*\propto N^{-1/5}$, a universal result that depends on neither
+the kernel nor the unknown density. \citet{scott1992} evaluated
+the integral $\int[f''(x)]^2\,dx$ under the assumption of a
+Gaussian underlying density and Gaussian kernel, obtaining
+
+\begin{equation}\label{eq:scott}
+h_{\mathrm{Scott}} = 1.059\,\hat{\sigma}\,N^{-1/5},
+\end{equation}
+
+\medskip
+
+where $\hat{\sigma}$ is the sample standard deviation.
+
+Scott's rule is the standard choice when the underlying density
+is approximately unimodal \citep{silverman1986}; its assumptions
+are acceptable for the maximum temperature distribution in the
+periods analyzed.
+
+\medskip
+
+With the estimator~$\hat{f}_h$ available, the mode of the
+distribution is estimated as the argument that maximizes the
+smoothed density:
+
+\begin{equation}\label{eq:mustar}
+\mu^* = \underset{x\in\mathcal{G}}{\arg\max}\;\hat{f}_h(x),
+\end{equation}
+
+where $\mathcal{G}$ is a uniform grid of $J=2{,}000$ points in
+$[\min X_i, \max X_i]$. The notation $\arg\max$ denotes the
+point~$x$ at which $\hat{f}_h$ attains its maximum value.
+With $J=2{,}000$ points over a typical range of
+$40\,{}^\circ\mathrm{C}$, the resolution is
+$\Delta x=0.02\,{}^\circ\mathrm{C}$, five times finer than the
+typical precision of thermometers, so discretization errors are
+negligible.
+
+\subsection{The Exceedance Variable}\label{subsec:excedencia}
+
+From~$\mu^*$ the exceedance variable is defined as
+
+\begin{equation}\label{eq:Ti}
+T_i = \max(X_i - \mu^*,\;0),\qquad i=1,\ldots,N.
+\end{equation}
+
+\medskip
+
+The variable~$T_i$ measures by how many degrees the temperature
+on day~$i$ exceeds the modal reference value. For days with
+$X_i\leq\mu^*$, $T_i=0$. For days with $X_i>\mu^*$, the
+exceedance is the positive difference $T_i=X_i-\mu^*$, which can
+take any continuous value in $(0,\infty)$. This mixture of a
+point mass and a continuous component requires a special
+distributional model.
+
+When $T>0$, the conditional distribution of~$T$ given~$T>0$ is
+modeled as Weibull with parameters~$(k,\lambda)$:
+
+\begin{equation}\label{eq:dist_cond}
+P(T\leq t \mid T>0) = F(t;\,k,\lambda),\qquad t>0.
+\end{equation}
+
+The parameter~$k$ in equation~\eqref{eq:dist_cond} characterizes
+the shape of the right tail of the original temperature
+distribution above~$\mu^*$. Accurately estimating~$k$
+and~$\lambda$ from grouped data is the central inferential problem
+addressed by the methodology in Section~\ref{sec:estimation}.
+
+\subsection{The Mixture Model}
+
+Standard Weibull distributions are defined over $(0,\infty)$ and
+are absolutely continuous: they assign zero probability to any
+isolated point. Fitting a Weibull directly to~$T_i$ without
+treating the point mass at zero produces an inconsistency, since
+the theoretical distribution says $P(T=0)=0$ while the data show
+$P(T=0)\approx 0.5$. The fitting procedure attempts to compensate
+for this discrepancy by distorting the distribution parameters,
+producing biased estimates of~$k$ and~$\lambda$.
+
+Taking the law of total probability as the starting point, for
+any value $t>0$ the probability that $T\leq t$ can be decomposed
+by conditioning on the two mutually exclusive events $\{T=0\}$
+and $\{T>0\}$:
+
+\begin{align}
+P(T\leq t)
+  &= P(T\leq t\mid T=0)\,P(T=0)
+   + P(T\leq t\mid T>0)\,P(T>0) \notag \\
+  &= 1\cdot p_0 + P(T\leq t\mid T>0)\cdot (1-p_0),
+    \label{eq:pt_total}
+\end{align}
+
+\medskip
+
+where the first term equals~1 because if $T=0$ and $t>0$ then
+$T\leq t$ always holds, and $p_0=P(T=0)$ has been defined. The
+conditional distribution $P(T\leq t\mid T>0)$ is what is modeled
+by the two-parameter Weibull: $P(T\leq t\mid T>0)=F(t;\,k,\lambda)$.
+Substituting into~\eqref{eq:pt_total} yields the \emph{mixture
+model}:
+
+\begin{equation}\label{eq:mezcla}
+F_{\mathrm{mix}}(t;\,k,\lambda)
+  = \begin{cases}
+    p_0 & t=0,\\[6pt]
+    p_0 + (1-p_0)\,F(t;\,k,\lambda) & t>0.
+    \end{cases}
+\end{equation}
+
+\medskip
+
+The Weibull parameters are now interpreted exclusively over the
+days that are positive exceedances: $k$ characterizes how quickly
+the probability of exceeding a given threshold decreases within
+the subpopulation of hot days, and $\lambda$ establishes the
+typical scale of those exceedances.
+
+\medskip
+
+The point-mass probability is estimated directly from the data:
+
+\begin{equation}\label{eq:p0}
+\hat{p}_0
+  = \frac{\#\{i : X_i\leq\mu^*\}}{N}.
+\end{equation}
+
+\medskip
+
+Unlike the case with the median as threshold, where
+$\hat{p}_0=0.5$ exactly by construction, with the modal
+threshold $\hat{p}_0$ is an estimated quantity that depends on
+the actual shape of the distribution. In cities with less
+skewed distributions, $\hat{p}_0$ may approach 0.5; in climates
+with a pronounced hot tail, it can depart substantially, as shown
+in Table~\ref{tab:p0}.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+\toprule
+City        & 1940--1968 & 1969--1996 & 1997--2026 \\
+\midrule
+Mexico City & 0.4796 & 0.4979 & 0.4782 \\
+Chihuahua   & 0.7612 & 0.6624 & 0.6828 \\
+Guadalajara & 0.4066 & 0.4321 & 0.4693 \\
+Monterrey   & 0.7506 & 0.6372 & 0.6759 \\
+Phoenix     & 0.8199 & 0.8180 & 0.8190 \\
+\bottomrule
+\end{tabular}
+\caption{Empirical zero-class probability $\hat{p}_0=P(T=0)$
+by city and period.}
+\label{tab:p0}
+\end{table}
+
+%% ════════════════════════════════════════════════════════════
+\section{Class Construction and the Role of~$n$}
+\label{sec:classes}
+%% ════════════════════════════════════════════════════════════
+
+The WLS regression of Section~\ref{sec:estimation} operates on
+grouped data: the positive exceedances $\{T_i:T_i>0\}$ are
+divided into $n$~classes, each characterized by a representative
+value~$t_j$ and a frequency~$f_j$. The number of classes~$n$ is
+an implicit parameter of the entire procedure: it affects the
+plotting positions assigned to each class, the weights used in
+the regression, and ultimately the estimated parameters~$(k,\lambda)$
+and the goodness of fit.
+
+In the temperature context, with data spanning several decades
+and five cities with different distributions, a universal
+fixed~$n$ would be inappropriate. It is therefore treated as a
+data-determined quantity.
+
+Two types of class are distinguished.
+
+The first class, containing all observations with $T_i=0$,
+corresponds to the probability mass accumulated by all days on
+which the temperature does not exceed the modal threshold~$\mu^*$.
+Its empirical weight is $\hat{p}_0=P(T=0)=P(X\leq\mu^*)$. Its
+representative value is set to
+$t_1=\varepsilon=0.01\,{}^\circ\mathrm{C}$ to allow the
+logarithmic transformation required by the Weibull linearization.
+
+This class is introduced to model explicitly the mixed structure
+of the variable $T=\max(X-\mu^*,0)$: the mixture distribution
+$F_{\text{mix}}$ requires that the point mass at zero be separated
+from the continuous Weibull component. The zero class does not
+enter the weighted linear regression (WLR) that estimates~$k$
+and~$\lambda$; its sole purpose is to ensure that the empirical
+and fitted CDFs are compared on the same scale.
+
+\medskip
+
+The second type---positive classes---consists of the half-open
+intervals $(0,h_{\mathrm{FD}}]$,
+$(h_{\mathrm{FD}},2h_{\mathrm{FD}}]$, $\ldots$, with
+representative values $t_2=h_{\mathrm{FD}}$,
+$t_3=2h_{\mathrm{FD}}$, and so on.
+
+\medskip
+
+The bin width $h_{\mathrm{FD}}$ is determined by the
+Freedman--Diaconis rule \citep{freedman1981}:
+
+\begin{equation}\label{eq:FD}
+h_{\mathrm{FD}}
+  = \frac{2\,\mathrm{IQR}(T)}{N_+^{1/3}},
+\end{equation}
+
+\medskip
+
+where $\mathrm{IQR}(T)=Q_{0.75}(T)-Q_{0.25}(T)$ is the
+interquartile range of all exceedances $T_i\geq 0$ and $N_+$ is
+the number of positive exceedances.
+
+\medskip
+
+Starting from the zero class and the positive classes generated
+by equation~\eqref{eq:FD}, the construction continues until empty
+classes are encountered. Classes with zero frequency are removed
+from the tail to obtain the active set of $n$~classes. The last
+class---the one that brings the cumulative frequency to exactly
+1---is also excluded from the WLS regression, since it would
+require evaluating $Y_j=\ln[-\ln(1-p_j)]$ at $p_j=1$, which is
+undefined.
+
+%% ════════════════════════════════════════════════════════════
+\section{WLS Estimation and Adaptive Optimization of~$a$}
+\label{sec:estimation}
+%% ════════════════════════════════════════════════════════════
+
+The Weibull CDF admits an exact linearization. Taking logarithms
+twice in equation~\eqref{eq:fda}:
+
+\begin{align}
+1 - F(t) &= \exp\!\left\{-\!\left(\frac{t}{\lambda}\right)^{\!k}\right\}
+  \nonumber\\[4pt]
+-\ln[1-F(t)] &= \left(\frac{t}{\lambda}\right)^{\!k}
+  \nonumber\\[4pt]
+\ln\!\bigl[-\ln(1-F(t))\bigr] &= k\ln t - k\ln\lambda.
+  \label{eq:doble_log}
+\end{align}
+
+\medskip
+
+Defining the transformed variables for the $j$th positive class
+with representative value~$t_j$ and plotting position~$p_j$:
+
+\begin{equation}\label{eq:XY}
+X_j = \ln(t_j),\qquad Y_j = \ln[-\ln(1-p_j)],
+\end{equation}
+
+\medskip
+equation~\eqref{eq:doble_log} reduces to an exact linear
+regression:
+\begin{equation}\label{eq:lineal}
+Y_j = k\,X_j + b,\qquad b = -k\ln\lambda.
+\end{equation}
+
+\medskip
+
+The slope of regression~\eqref{eq:lineal} directly estimates~$k$,
+and the intercept~$b$ allows recovery of~$\lambda$:
+
+\begin{equation}\label{eq:parametros}
+\hat{k} = \frac{S_{XY}}{S_{XX}},\qquad
+\hat{\lambda} = \exp\!\left(-\frac{b}{k}\right)
+              = \exp\!\left(-\frac{\bar{Y}_w - \hat{k}\,\bar{X}_w}
+                                   {\hat{k}}\right),
+\end{equation}
+
+\medskip
+
+where the weighted means are
+
+\begin{align}
+\bar{X}_w &= \frac{\sum_j w_j X_j}{\sum_j w_j},\qquad
+\bar{Y}_w  = \frac{\sum_j w_j Y_j}{\sum_j w_j}
+\end{align}
+
+\medskip
+
+and the weighted sums of products are
+
+\begin{align}
+S_{XY} &= \sum_j w_j(X_j - \bar{X}_w)(Y_j - \bar{Y}_w),\quad
+S_{XX}  = \sum_j w_j(X_j - \bar{X}_w)^2.\label{eq:sumas_w}
+\end{align}
+
+\medskip
+The regression coefficient of determination is
+
+\begin{equation}\label{eq:R2_wlr}
+R^2_{\mathrm{WLR}} = \frac{S_{XY}^2}{S_{XX}\,S_{YY}},\qquad
+S_{YY} = \sum_j w_j(Y_j - \bar{Y}_w)^2.
+\end{equation}
+
+\medskip
+
+Following \citet{olivera2019} and \citet{bergman1986}, the weight
+function is:
+
+\begin{equation}\label{eq:peso_A}
+w_j = (1 - p_j)\,[\ln(1-p_j)]^2.
+\end{equation}
+
+\subsection{Adaptive Estimation of~$a$}\label{subsec:familia}
+
+The symmetric one-parameter family $a\in[0,\tfrac{1}{2})$
+encompasses the classical estimators:
+\begin{equation}\label{eq:familia}
+p_i(a) = \frac{i-a}{n + 1 - 2a},\qquad i=1,\ldots,n.
+\end{equation}
+
+\medskip
+The plotting position of the zero class is always fixed at
+$p_1^{(0)}=1/(n+1)$, corresponding to $a=0$ (the Weibull rule).
+This ensures that the choice of~$a$ for the positive classes does
+not propagate a bias through the class that is excluded from the
+regression.
+
+For the positive classes, the parameter~$a$ is determined through
+numerical optimization, selecting the value that maximizes the
+goodness of fit of the Weibull mixture model. The resulting
+parameter is subsequently used in the estimation of the shape and
+scale parameters.
+
+\subsection{Operational Algorithm}\label{subsec:algoritmo}
+
+The proposed procedure for computing the Weibull
+parameters~$k$ and~$\lambda$ is summarized below.
+
+\begin{enumerate}
+\item Estimate~$\mu^*$ via KDE
+  (equations~\eqref{eq:kde}--\eqref{eq:mustar})
+  and compute $T_i=\max(X_i-\mu^*,0)$.
+\item Determine~$h_{\mathrm{FD}}$ (equation~\eqref{eq:FD}) and
+  construct the zero class and the positive classes.
+\item Remove trailing empty classes and identify~$n$.
+\item Obtain preliminary estimates~$(\tilde{k},\tilde{\lambda})$
+  by maximum likelihood.
+\item Refine the parameters through joint numerical optimization,
+  obtaining~$(k,\lambda)$.
+\end{enumerate}
+
+%% ════════════════════════════════════════════════════════════
+\section{Study Area and Data}
+%% ════════════════════════════════════════════════════════════
+
+Daily maximum temperature records were obtained for five cities
+with distinct climates within North America: Mexico City (CDMX),
+Guadalajara, Monterrey, Chihuahua, and Phoenix (AZ, USA). The
+first four are located at different elevations and latitudes
+within Mexico; Phoenix represents an arid desert climate at low
+elevation in the southwestern United States.
+
+Daily maximum temperature data were obtained from the \emph{ERA5
+hourly data on single levels from 1940 to present}
+\citep{hersbach2023era5}, a global climate reanalysis produced
+by the European Centre for Medium-Range Weather Forecasts (ECMWF)
+and distributed through the Climate Data Store of the Copernicus
+Climate Change Service (C3S) \citep{hersbach2020era5}. The data
+cover the three analysis periods: 1940--1968, 1969--1996, and
+1997--2026. All five cities have complete records for all three
+periods. The number of observations per city and period varies
+with the number of days per year.
+
+Figure~\ref{fig:kde} shows the KDE-estimated density of daily
+maximum temperature for each city and period, together with the
+modal threshold~$\mu^*$ identified in each case. The temperature
+distribution varies considerably across cities, and within each
+city the position of the density peak shows an upward trend across
+periods in most cases.
+
+\begin{figure}[ht]
+    \centering
+
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_cdmx_v2.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_chihuahua_v2.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_guadalajara_v2.png}
+    \end{minipage}
+
+    \vspace{0.5cm}
+
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_monterrey_v2.png}
+    \end{minipage}
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig1_kde_phoenix_v2.png}
+    \end{minipage}
+
+    \caption{KDE-estimated density of daily maximum temperature
+    for each city and the three periods analyzed. The vertical
+    dashed line indicates the modal threshold~$\mu^*$ estimated
+    for each period.}
+    \label{fig:kde}
+\end{figure}
+
+%% ════════════════════════════════════════════════════════════
+\section{Results}\label{sec:results}
+%% ════════════════════════════════════════════════════════════
+
+The Weibull mixture model fitted by the procedure described in
+Section~\ref{sec:estimation} achieves an excellent fit across
+all city--period combinations. The coefficient of determination
+$R^2$ exceeds 0.99 in every case. The Kolmogorov--Smirnov (KS)
+statistic computed on the individual observations $T_i>0$ ranges
+from 0.015 to 0.048; in most cases the associated $p$-value is
+below 0.05, which reflects the high power of the test at the
+sample sizes involved rather than a meaningful lack of fit.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{llrrrrrrr}
+\toprule
+City & Period & $\hat{\mu}^*$ & $k$ & $\lambda$ & $R^2$ & KS & $p_{\mathrm{KS}}$ \\
+\midrule
+Mexico City & 1940--1968 & 19.54 & 0.884 & 0.367 & 0.9972 & 0.027 & 0.001 \\
+            & 1969--1996 & 20.67 & 0.856 & 0.361 & 0.9993 & 0.015 & 0.191 \\
+            & 1997--2026 & 22.03 & 0.880 & 0.335 & 0.9971 & 0.023 & 0.006 \\
+\midrule
+Chihuahua   & 1940--1968 & 30.62 & 0.727 & 0.286 & 0.9978 & 0.035 & 0.005 \\
+            & 1969--1996 & 28.50 & 0.730 & 0.172 & 0.9974 & 0.034 & 0.001 \\
+            & 1997--2026 & 31.08 & 0.705 & 0.188 & 0.9970 & 0.045 & 0.000 \\
+\midrule
+Guadalajara & 1940--1968 & 25.00 & 0.862 & 0.244 & 0.9924 & 0.038 & 0.000 \\
+            & 1969--1996 & 25.72 & 0.878 & 0.265 & 0.9956 & 0.029 & 0.000 \\
+            & 1997--2026 & 27.29 & 0.869 & 0.290 & 0.9961 & 0.029 & 0.000 \\
+\midrule
+Monterrey   & 1940--1968 & 32.16 & 0.674 & 0.258 & 0.9941 & 0.048 & 0.000 \\
+            & 1969--1996 & 29.78 & 0.666 & 0.175 & 0.9951 & 0.048 & 0.000 \\
+            & 1997--2026 & 31.95 & 0.652 & 0.196 & 0.9957 & 0.045 & 0.000 \\
+\midrule
+Phoenix     & 1940--1968 & 38.65 & 0.712 & 0.269 & 0.9961 & 0.045 & 0.001 \\
+            & 1969--1996 & 39.09 & 0.699 & 0.237 & 0.9986 & 0.037 & 0.011 \\
+            & 1997--2026 & 39.83 & 0.708 & 0.268 & 0.9975 & 0.035 & 0.017 \\
+\bottomrule
+\end{tabular}
+\caption{Estimated Weibull mixture model parameters by city and period.}
+\label{tab:parametros}
+\end{table}
+
+A cross-city comparison reveals that Monterrey and Phoenix show
+the lowest values of~$k$ ($0.65$--$0.72$), indicating relatively
+heavier exceedance tails: once the modal temperature is exceeded,
+the probability of further exceedances (\textit{extreme events})
+decreases more gradually. Mexico City and Guadalajara show the
+highest values of~$k$ ($0.86$--$0.88$), with lighter tails
+consistent with their elevation and more temperate climate.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/fig6_tendencias_v2.png}
+  \caption{Temporal evolution of the modal threshold~$\mu^*$ by
+  city and period. An upward trend is apparent in most cities.}
+  \label{fig:tendencias}
+\end{figure}
+
+In Mexico City, $\mu^*$ increases from $19.54\,{}^\circ\text{C}$
+in 1940--1968 to $22.03\,{}^\circ\text{C}$ in 1997--2026, an
+increment of $2.49\,{}^\circ\text{C}$ over eight decades---the
+largest displacement in the study. Guadalajara shows a similar
+pattern, with an increase from $25.00$ to $27.29\,{}^\circ\text{C}$
+($\Delta\mu^*=2.29\,{}^\circ\text{C}$). Chihuahua and Monterrey
+display non-monotonic trajectories, exhibiting a decline in the
+second period followed by recovery in the third.
+Table~\ref{tab:excedencias} presents the estimated probabilities
+of daily maximum temperature exceeding the thresholds of 30, 35,
+and 40\,°C.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{llrrr}
+\toprule
+City & Period &
+  $P(X>30\,{}^\circ\text{C})$ &
+  $P(X>35\,{}^\circ\text{C})$ &
+  $P(X>40\,{}^\circ\text{C})$ \\
+\midrule
+Mexico City & 1940--1968 &  0.28 & 0.016 & 0.001 \\
+            & 1969--1996 &  0.37 & 0.015 & 0.001 \\
+            & 1997--2026 &  1.50 & 0.109 & 0.007 \\
+\midrule
+Chihuahua   & 1940--1968 & 27.48 & 2.70  & 0.048 \\
+            & 1969--1996 & 25.03 & 3.64  & 0.260 \\
+            & 1997--2026 & 38.38 & 8.64  & 0.489 \\
+\midrule
+Guadalajara & 1940--1968 & 12.26 & 1.75  & 0.211 \\
+            & 1969--1996 & 14.12 & 1.98  & 0.235 \\
+            & 1997--2026 & 21.29 & 2.54  & 0.239 \\
+\midrule
+Monterrey   & 1940--1968 & 37.89 & 7.42  & 0.106 \\
+            & 1969--1996 & 35.62 & 4.44  & 0.114 \\
+            & 1997--2026 & 45.97 & 10.97 & 0.268 \\
+\midrule
+Phoenix     & 1940--1968 & 47.95 & 32.29 & 19.42 \\
+            & 1969--1996 & 48.68 & 33.87 & 14.81 \\
+            & 1997--2026 & 51.96 & 36.60 & 17.71 \\
+\bottomrule
+\end{tabular}
+\caption{Estimated exceedance probabilities (\%) for critical
+temperature thresholds by city and period.
+$\dagger$~Empirical estimate ($\theta\leq\mu^*$).}
+\label{tab:excedencias}
+\end{table}
+
+Changes across periods are especially pronounced for Mexico City:
+$P(X>30\,{}^\circ\text{C})$ increases from 0.28\% in 1940--1968
+to 1.50\% in 1997--2026, driven primarily by the shift of~$\mu^*$
+from 19.5 to 22.0\,°C.
+
+For Chihuahua, the increase in $P(X>35\,{}^\circ\text{C})$ is
+particularly pronounced: from 2.70\% in 1940--1968 to 8.64\% in
+1997--2026, a factor of 3.2. The increase in
+$P(X>40\,{}^\circ\text{C})$ is even larger in relative terms:
+from 0.048\% to 0.489\% (factor 10.2), although the absolute
+probabilities remain small.
+
+In Phoenix---an inherently exceptional case by virtue of its
+desert climate---exceedance probabilities above
+$40\,{}^\circ\text{C}$ show a non-monotonic pattern: 19.4\%
+(1940--1968), 14.8\% (1969--1996), and 17.7\% (1997--2026).
+The reduction in the second period may reflect the slight decrease
+in~$k$ (from 0.712 to 0.699) that partially offsets the increase
+in~$\mu^*$, although it may also reflect natural variability in
+the distribution of extremes.
+
+\begin{figure}[ht]
+    \centering
+
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig5_excedencia_cdmx_v2.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig5_excedencia_chihuahua_v2.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/fig5_excedencia_phoenix_v2.png}
+    \end{minipage}
+  \caption{Exceedance probability curves $P(X>\theta)$ by city
+  and period for the three cities with the largest inter-period
+  changes.}
+    \label{fig:excedencia}
+\end{figure}
+
+\subsection{Hypothesis Assessment}\label{subsec:hipotesis}
+
+The results allow both hypotheses stated in
+Section~\ref{sec:intro} to be assessed.
+
+\textbf{H1.} The shape of the exceedance distribution does not
+change substantially over time within each city: the
+parameter~$k$ varies by less than 3.5\% across periods within
+each city, supporting~H1. However, the decreasing trend of~$k$
+in Monterrey (from 0.674 to 0.652) warrants attention: a
+progressively heavier tail would imply that the most intense
+extreme events become relatively more frequent even in the
+absence of a modal-level shift, reinforcing the risk in that city.
+
+\textbf{H2.} Mexico City, Guadalajara, and Phoenix show
+monotonic increases in~$\mu^*$ across periods. In these cities,
+the displacement of the modal threshold is the primary mechanism
+explaining the increase in exceedance probabilities. The most
+illustrative case is Mexico City: a $2.5\,{}^\circ\text{C}$ gain
+in~$\mu^*$, combined with the stability of~$k$, is sufficient
+to multiply the probability of exceeding 30\,°C by a factor of
+five.
+
+%% ════════════════════════════════════════════════════════════
+\section{Conclusions}\label{sec:conclusions}
+
+This paper proposes and applies an adaptive methodology for
+modeling the right tail of the daily maximum temperature
+distribution using the two-parameter Weibull distribution. The
+results obtained for five cities and three periods allow the
+research questions stated in the introduction to be answered.
+
+The modal threshold~$\mu^*$, representing the most frequently
+occurring maximum temperature, shows an upward trend in most of
+the cities analyzed. In Mexico City, the cumulative increment
+between the first period (1940--1968) and the third (1997--2026)
+is $2.5\,{}^\circ\mathrm{C}$; in Guadalajara,
+$2.3\,{}^\circ\mathrm{C}$; in Phoenix,
+$1.2\,{}^\circ\mathrm{C}$.
+
+The shape parameter~$k$ remains comparatively stable within each
+city across the three periods (with variations below 4\% in all
+cases), supporting hypothesis~H1. It is not possible, with the
+methodology employed, to rule out statistically significant
+changes in shape without a complementary formal inference
+analysis. The changes in~$\mu^*$ are the most systematic and of
+the greatest magnitude; changes in~$\lambda$ are of smaller
+magnitude and less monotonic; the parameter~$k$ is the most
+stable.
+
+Do the probabilities of exceeding critical thresholds change?
+Yes, and in some cases considerably. The probability of exceeding
+$30\,{}^\circ\mathrm{C}$ in Mexico City increases more than
+fivefold between the first and third periods. In Chihuahua, the
+probability of exceeding $35\,{}^\circ\mathrm{C}$ triples over
+the same interval, reflecting the greater sensitivity of
+semi-arid and continental climates---with larger summer thermal
+amplitude---to shifts in the modal threshold.
+
+The results suggest that, although the form of the extreme
+temperature distribution does not change substantially, the
+upward displacement of the modal threshold is sufficient to
+produce a perceptible increase in the probability of exceeding
+critical levels. Since cooling energy demand (especially for
+air conditioning) increases nonlinearly with temperature, moderate
+increases in~$\mu^*$ can have consequences for urban energy
+infrastructure. This effect is especially relevant in rapidly
+growing cities such as Mexico City, where air conditioning
+penetration has increased significantly in recent decades.
+
+%% ════════════════════════════════════════════════════════════
+\bibliography{refs_weibull}
+
+\end{document}
