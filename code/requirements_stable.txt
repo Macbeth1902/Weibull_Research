@@ -1,0 +1,11 @@
+# Entorno estable para prueba26.py — Python 3.11
+# Versiones probadas en Windows 10/11 con Application Control activo
+# Instalación: pip install -r requirements_stable.txt
+
+numpy==1.26.4
+pandas==2.2.3
+scipy==1.13.1
+openpyxl==3.1.2
+scikit-learn==1.5.2
+matplotlib==3.9.2
+seaborn==0.13.2
