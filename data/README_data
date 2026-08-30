@@ -1,0 +1,28 @@
+# Downloading the ERA5 data
+
+## Source
+
+ERA5 hourly data on single levels from 1940 to present. Variable: **2 m temperature** (`2m_temperature`).  
+DOI: https://doi.org/10.24381/cds.adbb2d47
+
+## Steps
+
+1. Create a free account at https://cds.climate.copernicus.eu
+2. Accept the ERA5 terms of use
+3. For each city, download the hourly time series using the
+   [CDS time series tool](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels-timeseries?tab=download)
+
+**City coordinates used in this study:**
+
+| City        | Latitude | Longitude |
+|-------------|----------|-----------|
+| Mexico City | 19.43    | −99.13    |
+| Guadalajara | 20.67    | −103.35   |
+| Monterrey   | 25.67    | −100.31   |
+| Chihuahua   | 28.63    | −106.07   |
+| Phoenix     | 33.45    | −112.07   |
+
+4. Select: Product type → Time series; Variable → 2 m temperature;
+   Period → as required; Format → NetCDF or CSV
+5. Convert daily maximum from hourly values and save as `.xlsx`
+   with a column named `i_tmax`
