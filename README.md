@@ -37,7 +37,7 @@ pip install -r code/requirements.txt
 ### 2. Run the analysis
 
 ```bash
-python code/prueba28.py
+python code/prueba27.py
 ```
 
 This produces `output/all_results.pkl` and an Excel summary.
@@ -45,7 +45,7 @@ This produces `output/all_results.pkl` and an Excel summary.
 ### 3. Generate figures
 
 ```bash
-python code/graficas27.py
+python code/graficas28.py
 ```
 
 Figures are saved to `output/figuras_articulo/` and `output/figuras_anexo/`.
